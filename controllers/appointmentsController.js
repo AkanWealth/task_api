@@ -10,12 +10,12 @@ module.exports = {
                 const page = parseInt(req.query.page || 1);
                 const limit = parseInt(req.query.limit || 10);
                 const offset = (page - 1) * limit;
-                const query = `SELECT * FROM appointment LIMIT ${limit} OFFSET ${offset}`;
+                const query = `SELECT * FROM apointments LIMIT ${limit} OFFSET ${offset}`;
                 const appointment = await pool.query(query);
 
-                const total = await pool.query("SELECT COUNT(*)::integer FROM appointment");
-                const next = page < Math.ceil(total.rows[0].count / limit) ? `/appointment?page=${page + 1}&limit=${limit}` : null;
-                const previous = page > 1 ? `/appointment?page=${page - 1}&limit=${limit}` : null;
+                const total = await pool.query("SELECT COUNT(*)::integer FROM apointments");
+                const next = page < Math.ceil(total.rows[0].count / limit) ? `/apointments?page=${page + 1}&limit=${limit}` : null;
+                const previous = page > 1 ? `/apointments?page=${page - 1}&limit=${limit}` : null;
                 const meta = {
                     total: total.rows[0].count,
                     limit: limit,
@@ -41,7 +41,7 @@ module.exports = {
     async createAppointment(req, res) {
         try {
             const { fname, email, mobile, book_appoint } = req.body;
-            const newAppoint = await pool.query("INSERT INTO appointment (fname, email, mobile, book_appoint) VALUES ($1,$2,$3,$4) RETURNING *", [fname, email, mobile, book_appoint])
+            const newAppoint = await pool.query("INSERT INTO apointments (fname, email, mobile, book_appoint) VALUES ($1,$2,$3,$4) RETURNING *", [fname, email, mobile, book_appoint])
             const token = tokenGenerator(newAppoint.rows[0]);
             // const transporter = nodemailer.createTransport({
             //     service: "gmail",
@@ -79,7 +79,7 @@ module.exports = {
             // delete appointment by id 
             if (req.user.data.role_id === 1) {
                 const { id } = req.params;
-                const deleteAppoint = await pool.query("DELETE FROM appointment WHERE id = $1", [id]);
+                const deleteAppoint = await pool.query("DELETE FROM apointments WHERE id = $1", [id]);
                 return res.send({ message: "Appointment deleted" })
             } else {
                 res.status(403).json({
