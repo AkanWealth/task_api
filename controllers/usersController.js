@@ -7,7 +7,7 @@ const { tokenGenerator } = require("../utils/tokenGen");
 module.exports = {
     async getAllUsers(req, res) {
         try {
-            if (req.user.data.role_id === 1 || req.user.data.role_id === 2) {
+            if (req.user.data.role_id === 1) {
                 const users = await pool.query("SELECT * FROM users");
                 res.json(users.rows);
             } else {
@@ -34,7 +34,7 @@ module.exports = {
                 "INSERT INTO users (first_name,last_name, email,password) VALUES ($1,$2,$3,$4) RETURNING *", [first_name, last_name, email, hashedPassword]
             );
             const newUserRole = await pool.query(
-                "INSERT INTO user_role (user_id,role_id) VALUES ($1,$2) RETURNING *", [newUser.rows[0].user_id, 3]
+                "INSERT INTO user_role (user_id,role_id) VALUES ($1,$2) RETURNING *", [newUser.rows[0].user_id, 2]
             );
 
             console.log(newUserRole.rows[0]);
