@@ -6,7 +6,10 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// cors middleware to allow cross origin resource sharing (CORS)
+corsOptions = {
+    origin: "https://appointment202.herokuapp.com/",
+    optionsSuccessStatus: 200
+}
 app.use(function(req, res, next) {
     // Website you wish to allow to connect (CORS) 
     res.setHeader('Access-Control-Allow-Origin', 'https://appointment202.herokuapp.com/');
